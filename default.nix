@@ -4,6 +4,6 @@ stdenv.mkDerivation {
 
   hardeningDisable = [ "fortify" ];
 
-  NIX_CFLAGS_COMPILE="-Iglad/include -ICimg/include -Itinyply/include";
+  NIX_CFLAGS_COMPILE="-isystem glad/include -isystem Cimg/include -isystem tinyply/include";
   buildInputs = [glfw glm cimg x11];
 }
