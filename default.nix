@@ -4,6 +4,8 @@ stdenv.mkDerivation {
   name = "gamagora-realtime";
   
 
-  NIX_CFLAGS_COMPILE="-Iglad/include";
-  buildInputs = [glfw glm];
+  hardeningDisable = [ "fortify" ];
+
+  NIX_CFLAGS_COMPILE="-Iglad/include -ICimg/include";
+  buildInputs = [glfw glm cimg x11];
 }
