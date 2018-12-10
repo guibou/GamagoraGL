@@ -113,6 +113,17 @@ GLuint AttachAndLink(std::vector<GLuint> shaders)
 	return prg;
 }
 
+void APIENTRY opengl_error_callback(GLenum source,
+            GLenum type,
+            GLuint id,
+            GLenum severity,
+            GLsizei length,
+            const GLchar *message,
+            const void *userParam)
+{
+    std::cout << message << std::endl;
+}
+
 int main(void)
 {
     GLFWwindow* window;
@@ -123,6 +134,7 @@ int main(void)
 
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 5);
+	glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GLFW_TRUE);
 
     window = glfwCreateWindow(640, 480, "Simple example", NULL, NULL);
 
@@ -141,6 +153,9 @@ int main(void)
 		std::cerr << "Something went wrong!" << std::endl;
        exit(-1);
     }
+
+	// Callbacks
+	glDebugMessageCallback(opengl_error_callback, nullptr);
 
 	const size_t nParticules = 1000;
 	const auto particules = MakeParticules(nParticules);
