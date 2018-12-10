@@ -9,6 +9,9 @@
 #include <fstream>
 #include <string>
 
+#define TINYPLY_IMPLEMENTATION
+#include <tinyply.h>
+
 static void error_callback(int /*error*/, const char* description)
 {
 	std::cerr << "Error: " << description << std::endl;
