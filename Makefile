@@ -1,5 +1,5 @@
-CXXFLAGS=-g -std=c++11 -I glad/include -Wall
-LDFLAGS=-lGL -lX11 -lglfw
+CXXFLAGS=-g -std=c++17 -I glad/include -Wall -Wextra -Weffc++
+LDFLAGS=-lGL -lX11 -lglfw -ldl -lpthread
 CC=g++
 
 LD=g++
