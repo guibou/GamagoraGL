@@ -4,5 +4,5 @@ stdenv.mkDerivation {
 
   hardeningDisable = [ "fortify" ];
 
-  buildInputs = [glfw glm cimg x11];
+  buildInputs = [cmake glfw glm cimg x11];
 }
