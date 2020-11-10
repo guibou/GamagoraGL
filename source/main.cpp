@@ -9,6 +9,8 @@
 #include <fstream>
 #include <string>
 
+#include "shader.h"
+
 #define TINYPLY_IMPLEMENTATION
 #include <tinyply.h>
 
@@ -59,62 +61,6 @@ std::vector<Particle> MakeParticles(const int n)
 	return p;
 }
 
-GLuint MakeShader(GLuint t, std::string path)
-{
-	std::cout << path << std::endl;
-	std::ifstream file(path.c_str(), std::ios::in);
-	std::ostringstream contents;
-	contents << file.rdbuf();
-	file.close();
-
-	const auto content = contents.str();
-	std::cout << content << std::endl;
-
-	const auto s = glCreateShader(t);
-
-	GLint sizes[] = {(GLint) content.size()};
-	const auto data = content.data();
-
-	glShaderSource(s, 1, &data, sizes);
-	glCompileShader(s);
-
-	GLint success;
-	glGetShaderiv(s, GL_COMPILE_STATUS, &success);
-	if(!success)
-	{
-		GLchar infoLog[512];
-		GLsizei l;
-		glGetShaderInfoLog(s, 512, &l, infoLog);
-
-		std::cout << infoLog << std::endl;
-	}
-
-	return s;
-}
-
-GLuint AttachAndLink(std::vector<GLuint> shaders)
-{
-	const auto prg = glCreateProgram();
-	for(const auto s : shaders)
-	{
-		glAttachShader(prg, s);
-	}
-
-	glLinkProgram(prg);
-
-	GLint success;
-	glGetProgramiv(prg, GL_LINK_STATUS, &success);
-	if(!success)
-	{
-		GLchar infoLog[512];
-		GLsizei l;
-		glGetProgramInfoLog(prg, 512, &l, infoLog);
-
-		std::cout << infoLog << std::endl;
-	}
-
-	return prg;
-}
 
 void APIENTRY opengl_error_callback(GLenum source,
 		GLenum type,
