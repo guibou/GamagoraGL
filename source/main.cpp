@@ -14,6 +14,8 @@
 #define TINYPLY_IMPLEMENTATION
 #include <tinyply.h>
 
+#include "stl.h"
+
 static void error_callback(int /*error*/, const char* description)
 {
 	std::cerr << "Error: " << description << std::endl;
