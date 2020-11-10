@@ -74,7 +74,6 @@ if (${CMAKE_HOST_UNIX})
             /usr/local/include
             /sw/include
             /opt/local/include
-            NO_DEFAULT_PATH
             DOC "The directory where GLFW/glfw3.h resides"
     )
     find_library( GLFW_LIBRARY
@@ -90,7 +89,6 @@ if (${CMAKE_HOST_UNIX})
             /sw/lib
             /opt/local/lib
             /usr/lib/x86_64-linux-gnu
-            NO_DEFAULT_PATH
             DOC "The GLFW library")
 endif ()
 

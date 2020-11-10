@@ -45,7 +45,27 @@ if(NOT GLFW_FOUND)
 	message(FATAL_ERROR "glfw not found!")
 endif()
 
-include_directories(${GLM_INCLUDE_DIR})
+include_directories(${GLFW_INCLUDE_DIR})
+
+#------------------------------------------------------------------------------
+# - X11
+#------------------------------------------------------------------------------
+find_package(X11 REQUIRED)
+
+if(NOT X11_FOUND)
+	message(FATAL_ERROR "X11 not found!")
+endif()
+
+include_directories(${X11_INCLUDE_DIR})
+
+#------------------------------------------------------------------------------
+# - Threads
+#------------------------------------------------------------------------------
+find_package(Threads REQUIRED)
+
+if(THREADS_HAVE_PTHREAD_ARG)
+	target_compile_options(${CMAKE_PROJECT_NAME} PUBLIC "-pthread")
+endif()
 
 #------------------------------------------------------------------------------
 # Get source files
@@ -66,7 +86,10 @@ add_executable(${CMAKE_PROJECT_NAME} ${SOURCE_FILES})
 #------------------------------------------------------------------------------
 # Link options
 #------------------------------------------------------------------------------
-target_link_libraries(${CMAKE_PROJECT_NAME} dl X11 pthread
+target_link_libraries(${CMAKE_PROJECT_NAME}
+                      ${CMAKE_DL_LIBS}
+                      ${CMAKE_THREAD_LIBS_INIT}
+                      ${X11_LIBRARIES}
                       ${GLFW_LIBRARY}
                       ${OPENGL_LIBRARIES})
 
