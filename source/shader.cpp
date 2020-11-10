@@ -9,6 +9,12 @@ GLuint MakeShader(GLuint t, std::string path)
 {
 	std::cout << path << std::endl;
 	std::ifstream file(path.c_str(), std::ios::in);
+
+	if(!file.good())
+	{
+		throw std::runtime_error("File not found: " + path);
+	}
+
 	std::ostringstream contents;
 	contents << file.rdbuf();
 	file.close();
@@ -32,7 +38,7 @@ GLuint MakeShader(GLuint t, std::string path)
 		GLsizei l;
 		glGetShaderInfoLog(s, 512, &l, infoLog);
 
-		std::cout << infoLog << std::endl;
+		throw std::runtime_error(infoLog);
 	}
 
 	return s;
@@ -56,7 +62,7 @@ GLuint AttachAndLink(std::vector<GLuint> shaders)
 		GLsizei l;
 		glGetProgramInfoLog(prg, 512, &l, infoLog);
 
-		std::cout << infoLog << std::endl;
+		throw std::runtime_error(infoLog);
 	}
 
 	return prg;
