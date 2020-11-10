@@ -9,8 +9,13 @@
 #include <fstream>
 #include <string>
 
+/*
+
+UNCOMMENT when you'll start using tinyply.
+
 #define TINYPLY_IMPLEMENTATION
 #include <tinyply.h>
+*/
 
 static void error_callback(int /*error*/, const char* description)
 {
