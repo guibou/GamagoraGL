@@ -1,6 +1,8 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <glm/vec3.hpp>
+#include <glm/vec4.hpp>
+#include <glm/vec2.hpp>
 
 #include <vector>
 #include <iostream>
@@ -25,9 +27,9 @@ static void key_callback(GLFWwindow* window, int key, int /*scancode*/, int acti
 
 /* PARTICULES */
 struct Particule {
-	glm::vec3 position;
-	glm::vec3 color;
-	glm::vec3 speed;
+	glm::vec4 position;
+	glm::vec4 color;
+	glm::vec4 speed;
 };
 
 std::vector<Particule> MakeParticules(const int n)
@@ -45,14 +47,21 @@ std::vector<Particule> MakeParticules(const int n)
 				{
 				distributionWorld(generator),
 				distributionWorld(generator),
-				distributionWorld(generator)
+				distributionWorld(generator),
+				1
 				},
 				{
-				distribution01(generator),
-				distribution01(generator),
-				distribution01(generator)
+				 distribution01(generator),
+				 distribution01(generator),
+				 distribution01(generator)
+				 ,1
 				},
-				{0.f, 0.f, 0.f}
+				{
+				 distribution01(generator),
+				 distribution01(generator),
+				 distribution01(generator)
+				 ,distribution01(generator) * 5
+				 }
 				});
 	}
 
@@ -160,7 +169,7 @@ int main(void)
 	// Callbacks
 	glDebugMessageCallback(opengl_error_callback, nullptr);
 
-	const size_t nParticules = 1000;
+	const size_t nParticules = 1024;
 	const auto particules = MakeParticules(nParticules);
 
 	// Shader
@@ -170,6 +179,12 @@ int main(void)
 	const auto program = AttachAndLink({vertex, fragment});
 
 	glUseProgram(program);
+
+
+	// Compute program
+	const auto compute_shader = MakeShader(GL_COMPUTE_SHADER, "compute.shader");
+
+	const auto compute_program = AttachAndLink({compute_shader});
 
 
 	// Buffers
@@ -184,8 +199,13 @@ int main(void)
 	// Bindings
 	const auto index = glGetAttribLocation(program, "position");
 
-	glVertexAttribPointer(index, 3, GL_FLOAT, GL_FALSE, sizeof(Particule), nullptr);
+	glVertexAttribPointer(index, 4, GL_FLOAT, GL_FALSE, sizeof(Particule), nullptr);
 	glEnableVertexAttribArray(index);
+
+	const auto indexColor = glGetAttribLocation(program, "color");
+
+	glVertexAttribPointer(indexColor, 4, GL_FLOAT, GL_FALSE, sizeof(Particule), (void*) (4 * 4));
+	glEnableVertexAttribArray(indexColor);
 
 	glPointSize(20.f);
 
@@ -194,6 +214,25 @@ int main(void)
 		int width, height;
 		glfwGetFramebufferSize(window, &width, &height);
 
+		glBindVertexArray(0);
+
+		double xpos, ypos;
+		glfwGetCursorPos(window, &xpos, &ypos);
+
+		glm::vec2 mouse{float(xpos) / width * 2 - 1,
+						float(ypos) / height * 2 - 1};
+
+		// compute part
+		glUseProgram(compute_program);
+		glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, vbo);
+
+		glProgramUniform2fv(compute_program, glGetUniformLocation(compute_program, "mouse"), 1, &mouse.x);
+
+		glDispatchCompute(nParticules / 32, 1, 1);
+		glMemoryBarrier(GL_ALL_BARRIER_BITS);
+
+		glBindVertexArray(vao);
+		glUseProgram(program);
 		glViewport(0, 0, width, height);
 
 		glClear(GL_COLOR_BUFFER_BIT);
