@@ -79,6 +79,23 @@ For the next session, have fun with textures. Add many of them. Draw quads, with
 
 ## Framebuffer
 
-Next
+Next. We'll see framebuffer indirect rendering and clipping.
 
+Applications:
 
+- Mirrors
+- Shadow map
+- Portal
+
+# Future sessions
+
+Many things:
+
+- Tesselation shader
+- Geometry shader
+- Computer shader
+- Instance rendering
+
+# Ranking
+
+At the end of this course, you must be able to provide a small interactive environment (i.e. game) which showcase the different elements you've learned during this course.

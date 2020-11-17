@@ -15,6 +15,7 @@
 #include <tinyply.h>
 
 #include "stl.h"
+#include "texture.h"
 
 static void error_callback(int /*error*/, const char* description)
 {
