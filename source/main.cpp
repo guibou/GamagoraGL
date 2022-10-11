@@ -63,7 +63,6 @@ int main(void)
 	glfwSetKeyCallback(window, key_callback);
 	glfwMakeContextCurrent(window);
 	glfwSwapInterval(1);
-	// NOTE: OpenGL error checks have been omitted for brevity
 
 	if(!gladLoadGL()) {
 		std::cerr << "Something went wrong!" << std::endl;
@@ -72,6 +71,7 @@ int main(void)
 
 	// Callbacks
 	glDebugMessageCallback(opengl_error_callback, nullptr);
+    glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
 
 	// Shader
 	const auto vertex = MakeShader(GL_VERTEX_SHADER, "resources/shaders/shader.vert");
@@ -110,14 +110,6 @@ int main(void)
 	{
 		int width, height;
 		glfwGetFramebufferSize(window, &width, &height);
-
-		float t = glfwGetTime();
-
-		glm::mat4 trans = glm::mat4(1.0f);
-		trans = glm::rotate(trans, glm::radians(t * 50), glm::vec3(0.0f, 1.0f, 1.0f));
-
-		glUniformMatrix4fv(0, 1, GL_FALSE, &trans[0][0]);
-
 		glViewport(0, 0, width, height);
 
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
