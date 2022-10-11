@@ -14,11 +14,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-
 #include "shader.h"
-
-#define TINYPLY_IMPLEMENTATION
-#include <tinyply.h>
 
 #include "stl.h"
 
@@ -32,43 +28,6 @@ static void key_callback(GLFWwindow* window, int key, int /*scancode*/, int acti
 	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
 		glfwSetWindowShouldClose(window, GLFW_TRUE);
 }
-
-/* PARTICULES */
-struct Particle {
-	glm::vec3 position;
-	glm::vec3 color;
-	glm::vec3 speed;
-};
-
-std::vector<Particle> MakeParticles(const int n)
-{
-	std::default_random_engine generator;
-	std::uniform_real_distribution<float> distribution01(0, 1);
-	std::uniform_real_distribution<float> distributionWorld(-1, 1);
-
-	std::vector<Particle> p;
-	p.reserve(n);
-
-	for(int i = 0; i < n; i++)
-	{
-		p.push_back(Particle{
-				{
-				distributionWorld(generator),
-				distributionWorld(generator),
-				distributionWorld(generator)
-				},
-				{
-				distribution01(generator),
-				distribution01(generator),
-				distribution01(generator)
-				},
-				{0.f, 0.f, 0.f}
-				});
-	}
-
-	return p;
-}
-
 
 void APIENTRY opengl_error_callback(GLenum source,
 		GLenum type,
@@ -113,9 +72,6 @@ int main(void)
 
 	// Callbacks
 	glDebugMessageCallback(opengl_error_callback, nullptr);
-
-	const size_t nParticles = 1000;
-	const auto particules = MakeParticles(nParticles);
 
 	// Shader
 	const auto vertex = MakeShader(GL_VERTEX_SHADER, "resources/shaders/shader.vert");

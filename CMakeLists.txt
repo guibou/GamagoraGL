@@ -5,6 +5,7 @@ cmake_minimum_required(VERSION 3.1)
 
 project(GamagoraGL)
 
+add_compile_options(-Wall -std=c++17)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
