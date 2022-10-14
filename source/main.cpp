@@ -40,6 +40,11 @@ void APIENTRY opengl_error_callback(GLenum source,
 	std::cout << message << std::endl;
 }
 
+struct TriangleWithNormal
+{
+    glm::vec3 p0, n0, p1, n1, p2, n2;
+};
+
 int main(void)
 {
 	GLFWwindow* window;
@@ -87,20 +92,40 @@ int main(void)
 	glGenBuffers(1, &vbo);
 	glGenVertexArrays(1, &vao);
 
-	const auto tris = ReadStl("logo.stl");
-	std::cout << tris.size() << std::endl;
+	const auto trisWithoutNormals = ReadStl("logo.stl");
+
+    std::vector<TriangleWithNormal> tris;
+    tris.reserve(trisWithoutNormals.size());
+
+    for(int i = 0; i < trisWithoutNormals.size(); i++)
+    {
+        auto &t = trisWithoutNormals[i];
+
+        glm::vec3 n = glm::normalize(glm::cross(t.p0 - t.p1, t.p0 - t.p2));
+
+        TriangleWithNormal triWithNormal{t.p0, n, t.p1, n, t.p2, n};
+
+        tris.push_back(triWithNormal);
+    };
+
+	std::cout << "Nb triangles: " << tris.size() << std::endl;
 	const auto nTriangles = tris.size();
 
 
 	glBindVertexArray(vao);
 	glBindBuffer(GL_ARRAY_BUFFER, vbo);
-	glBufferData(GL_ARRAY_BUFFER, nTriangles * sizeof(Triangle), tris.data(), GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, nTriangles * sizeof(TriangleWithNormal), tris.data(), GL_STATIC_DRAW);
 
 	// Bindings
 	const auto index = glGetAttribLocation(program, "position");
 
-	glVertexAttribPointer(index, 3, GL_FLOAT, GL_FALSE, sizeof(Triangle) / 3, nullptr);
+	glVertexAttribPointer(index, 3, GL_FLOAT, GL_FALSE, 2 * sizeof(glm::vec3), nullptr);
 	glEnableVertexAttribArray(index);
+
+	const auto indexNormal = glGetAttribLocation(program, "normal");
+
+	glVertexAttribPointer(indexNormal, 3, GL_FLOAT, GL_FALSE, 2 * sizeof(glm::vec3), (const void*) sizeof(glm::vec3));
+	glEnableVertexAttribArray(indexNormal);
 
 	// glPointSize(20.f);
 	//
