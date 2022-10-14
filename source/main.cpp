@@ -137,7 +137,7 @@ int main(void)
 
     const glm::vec3 lightPos{50, 50, 50};
     const glm::vec3 albedo{0.5, 0.5, 0.5};
-    const glm::vec3 Le{1000, 1000, 1000};
+    const glm::vec3 Le{10000, 10000, 10000};
 
     const auto locLightPos = glGetUniformLocation(program, "positionLight");
 
