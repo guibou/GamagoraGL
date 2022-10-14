@@ -134,6 +134,17 @@ int main(void)
     const auto locTransform = glGetUniformLocation(program, "transformation");
     assert(locTransform != -1);
 
+
+    const glm::vec3 lightPos{50, 50, 50};
+    const glm::vec3 albedo{0.5, 0.5, 0.5};
+    const glm::vec3 Le{1000, 1000, 1000};
+
+    const auto locLightPos = glGetUniformLocation(program, "positionLight");
+
+    const auto locAlbedo = glGetUniformLocation(program, "albedo");
+
+    const auto locLe = glGetUniformLocation(program, "Le");
+
 	while (!glfwWindowShouldClose(window))
 	{
 		int width, height;
@@ -147,6 +158,10 @@ int main(void)
         glm::mat4 trans = glm::perspective<float>(3.14 / 2, ((float)width) / height, 1.0, 100.0) * glm::lookAt(eye, glm::vec3{0, 0, 0}, glm::vec3{0, 1, 0});
 
         glUniformMatrix4fv(locTransform, 1, GL_FALSE, &trans[0][0]);
+
+        glUniform3fv(locLightPos, 1, glm::value_ptr(lightPos));
+        glUniform3fv(locAlbedo, 1, glm::value_ptr(albedo));
+        glUniform3fv(locLe, 1, glm::value_ptr(Le));
 
 
 		glDrawArrays(GL_TRIANGLES, 0, nTriangles * 3);
