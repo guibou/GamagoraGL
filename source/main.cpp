@@ -135,7 +135,6 @@ int main(void)
     assert(locTransform != -1);
 
 
-    const glm::vec3 lightPos{50, 50, 50};
     const glm::vec3 albedo{0.5, 0.5, 0.5};
     const glm::vec3 Le{10000, 10000, 10000};
 
@@ -147,6 +146,9 @@ int main(void)
 
 	while (!glfwWindowShouldClose(window))
 	{
+        float time = glfwGetTime();
+        const glm::vec3 lightPos{50 * std::cos(time), 50 * std::sin(time), 50};
+
 		int width, height;
 		glfwGetFramebufferSize(window, &width, &height);
 		glViewport(0, 0, width, height);
