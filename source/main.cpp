@@ -106,6 +106,9 @@ int main(void)
 	//
 	glEnable(GL_DEPTH_TEST);
 
+    const auto locTransform = glGetUniformLocation(program, "transformation");
+    assert(locTransform != -1);
+
 	while (!glfwWindowShouldClose(window))
 	{
 		int width, height;
@@ -113,6 +116,13 @@ int main(void)
 		glViewport(0, 0, width, height);
 
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+        // Compute the transformation matrix
+        const glm::vec3 eye{20, 20, 20};
+        glm::mat4 trans = glm::perspective<float>(3.14 / 2, ((float)width) / height, 1.0, 100.0) * glm::lookAt(eye, glm::vec3{0, 0, 0}, glm::vec3{0, 1, 0});
+
+        glUniformMatrix4fv(locTransform, 1, GL_FALSE, &trans[0][0]);
+
 
 		glDrawArrays(GL_TRIANGLES, 0, nTriangles * 3);
 
