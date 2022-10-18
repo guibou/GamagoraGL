@@ -15,6 +15,7 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include "shader.h"
+#include "texture.h"
 
 #include "stl.h"
 
@@ -143,6 +144,26 @@ int main(void)
     const auto locAlbedo = glGetUniformLocation(program, "albedo");
 
     const auto locLe = glGetUniformLocation(program, "Le");
+
+    // Load a texture
+    // That's pure C++
+    // auto im = LoadImage("/home/guillaume/skydive_videos/mpv-shot0001.jpg");
+    auto im = LoadImage("vorti.png");
+
+    // Create an OpenGL texture
+    GLuint texC;
+    glCreateTextures(GL_TEXTURE_2D, 1, &texC);
+    glTextureStorage2D(texC, 5, GL_RGB8, im.width, im.height);
+
+    // Send the data
+    glPixelStorei(GL_PACK_ALIGNMENT, 1);
+    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+    glTextureSubImage2D(texC, 0, 0, 0, im.width, im.height, GL_RGB, GL_UNSIGNED_BYTE, im.data.data());
+    glGenerateTextureMipmap(texC);
+
+    // Attach it to the shader
+    glBindTextureUnit(0, texC);
+    glUniform1i(glGetUniformLocation(program, "tex"), 0);
 
 	while (!glfwWindowShouldClose(window))
 	{

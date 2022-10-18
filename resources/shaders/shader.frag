@@ -8,6 +8,7 @@ out vec4 color;
 uniform vec3 Le;
 uniform vec3 positionLight;
 uniform vec3 albedo;
+uniform sampler2D tex;
 
 void main()
 {
@@ -19,4 +20,6 @@ void main()
     //
     //
     color = vec4(Le / d2 * dot(normal_out, omegaI) * albedo, 1.0);
+    // color = texelFetch(tex, ivec2(gl_FragCoord.xy), 0);
+    color = texture(tex, fract(gl_FragCoord.xy / vec2(500, 500)));
 }
